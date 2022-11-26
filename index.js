@@ -44,6 +44,7 @@ async function run () {
             const filter = {categoryName : name}
             const result = await bookCollections.findOne(filter).toArray();
             res.send(result);
+            console.log(result);
         })
     }
     finally{}
