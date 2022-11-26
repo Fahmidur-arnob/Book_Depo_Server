@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 app.use(cors());
 app.use(express.json());
@@ -15,7 +15,27 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run () {
     try{
+        const booksCategories = client.db('book-depo').collection('booksCategories');
+        const bookCollections = client.db('book-depo').collection('bookCollections');
 
+        app.get('/bookcategories', async(req, res) => {
+            const query = {};
+            const result = await booksCategories.find(query).toArray();
+            res.send(result);
+        })
+
+        app.get('/bookcategories/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = {_id : ObjectId(id)};
+            const result = await booksCategories.findOne(filter);
+            res.send(result);
+        })
+
+        app.get('/bookcollections', async(req, res) => {
+            const query = {};
+            const result = await bookCollections.find(query).toArray();
+            res.send(result);
+        })
     }
     finally{}
 }
