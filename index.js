@@ -30,6 +30,7 @@ async function run () {
             const filter = {_id : ObjectId(id)};
             const result = await booksCategories.findOne(filter);
             res.send(result);
+            console.log(result);
         })
 
         app.get('/bookcollections', async(req, res) => {
