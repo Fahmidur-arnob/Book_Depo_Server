@@ -36,6 +36,13 @@ async function run () {
             const result = await bookCollections.find(query).toArray();
             res.send(result);
         })
+
+        app.get('/bookcollections/:name', async(req, res) => {
+            const name = req.params.name;
+            const filter = {categoryName : name}
+            const result = await bookCollections.findOne(filter);
+            res.send(result);
+        })
     }
     finally{}
 }
