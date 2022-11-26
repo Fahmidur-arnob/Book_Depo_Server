@@ -16,6 +16,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run () {
     try{
         const booksCategories = client.db('book-depo').collection('booksCategories');
+
         const bookCollections = client.db('book-depo').collection('bookCollections');
 
         app.get('/bookcategories', async(req, res) => {
@@ -40,7 +41,7 @@ async function run () {
         app.get('/bookcollections/:name', async(req, res) => {
             const name = req.params.name;
             const filter = {categoryName : name}
-            const result = await bookCollections.findOne(filter);
+            const result = await bookCollections.findOne(filter).toArray();
             res.send(result);
         })
     }
