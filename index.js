@@ -25,7 +25,7 @@ async function run () {
             const query = {};
             const result = await booksCategories.find(query).toArray();
             res.send(result);
-        })
+        });
 
         app.get('/bookcategories/:id', async(req, res) => {
             const id = req.params.id;
@@ -33,14 +33,14 @@ async function run () {
             const result = await booksCategories.findOne(filter);
             res.send(result);
             console.log(result);
-        })
+        });
 
         app.get('/bookcollections', async(req, res) => {
             const query = {};
             const result = await bookCollections.find(query).toArray();
             res.send(result);
             console.log(result);
-        })
+        });
 
         app.get('/bookcollections/:name', async(req, res) => {
             const name = req.params.name;
@@ -48,7 +48,18 @@ async function run () {
             const result = await bookCollections.find(filter).toArray();
             res.send(result);
             console.log(result);
+        });
+
+        //new API for modal booking data;
+        
+        //Creating or POST Method of CRUD
+        app.post('/bookings', async(req, res) => {
+            const booking = req.body;
+            console.log(booking);
+            const result = await bookingCollection.insertOne(booking);
+            res.send(result);
         })
+        
     }
     finally{}
 }
