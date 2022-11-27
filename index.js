@@ -56,10 +56,45 @@ async function run () {
         app.post('/bookings', async(req, res) => {
             const booking = req.body;
             console.log(booking);
+
+            const query = {
+                name: booking.name,
+                email: booking.email,
+                productName: booking.productName,
+                location: booking.location,
+                phoneNumber: booking.phoneNumber,
+                price: booking.price
+            }
+
+            const alreadyBooked = await bookingCollection.find(query).toArray();
+
+            if(alreadyBooked.length){
+                const message = `You have already booked ${booking.productName}`;
+                return res.send({acknowledge: false, message})
+            }
+
             const result = await bookingCollection.insertOne(booking);
             res.send(result);
         })
+
+        app.get('/bookings', async(req, res) => {
+            const email = req.query.email;
+
+            console.log(email);
+
+            const query = {email:email};
+
+            const bookings = await bookingCollection.find(query).toArray();
+            
+            res.send(bookings);
+        })
         
+        app.get('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const booking = await bookingCollection.findOne(query);
+            res.send(booking);
+        })
     }
     finally{}
 }
