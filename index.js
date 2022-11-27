@@ -37,6 +37,7 @@ async function run () {
             const query = {};
             const result = await bookCollections.find(query).toArray();
             res.send(result);
+            console.log(result);
         })
 
         app.get('/bookcollections/:name', async(req, res) => {
