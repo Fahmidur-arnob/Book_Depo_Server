@@ -19,6 +19,8 @@ async function run () {
 
         const bookCollections = client.db('book-depo').collection('bookCollections');
 
+        const bookingCollection = client.db('book-depo').collection('bookings');
+
         app.get('/bookcategories', async(req, res) => {
             const query = {};
             const result = await booksCategories.find(query).toArray();
