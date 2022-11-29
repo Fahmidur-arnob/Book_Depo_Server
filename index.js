@@ -4,6 +4,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const jwt =  require('jsonwebtoken'); 
+require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
@@ -20,6 +22,8 @@ async function run () {
         const bookCollections = client.db('book-depo').collection('bookCollections');
 
         const bookingCollection = client.db('book-depo').collection('bookings');
+
+        const usersCollection = client.db('book-depo').collection('users');
 
         app.get('/bookcategories', async(req, res) => {
             const query = {};
@@ -75,7 +79,7 @@ async function run () {
 
             const result = await bookingCollection.insertOne(booking);
             res.send(result);
-        })
+        });
 
         app.get('/bookings', async(req, res) => {
             const email = req.query.email;
@@ -87,14 +91,33 @@ async function run () {
             const bookings = await bookingCollection.find(query).toArray();
             
             res.send(bookings);
-        })
+        });
         
         app.get('/bookings/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const booking = await bookingCollection.findOne(query);
             res.send(booking);
+        });
+
+        app.get('/jwt', async(req, res) => {
+            const email = req.query.email;
+            const query = {email: email};
+            const user = await usersCollection.findOne(query);
+            if(user){
+                const token = jwt.sign({email}, process.env.ACCESS_TOKEN, {expiresIn: '1h'})
+                return res.send({accessToken: token});
+            }
+            res.status(403).send({accessToken: ''});
         })
+
+        app.post('/users', async(req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            console.log(result);
+            res.send(result);
+        })
+
     }
     finally{}
 }
